@@ -1,0 +1,9 @@
+blocks/
+datastore/
+keystore/
+api
+config
+datastore_spec
+gateway
+repo.lock
+version

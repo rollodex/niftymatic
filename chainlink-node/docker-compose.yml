@@ -1,0 +1,31 @@
+services:
+  pg_chainlink:
+    image: "postgres"
+    ports:
+      - "5432:5432"
+    env_file:
+      - database.env
+    volumes:
+     - ./data:/var/lib/postgressql/data/
+  ipfs_node:
+    image: "ipfs/kubo:latest"
+    ports:
+      - "4001:4001"
+      - "4001:4001/udp"
+      - "8080:8080"
+      - "5001:5001"
+    volumes:
+      - ./ipfs_staging:/export
+      - ./ipfs_data:/data/ipfs
+  chainlink:
+      image: "smartcontract/chainlink:1.9.0-root"
+      env_file:
+        - .env
+      depends_on:
+        - pg_chainlink
+        - ipfs_node
+      ports:
+        - "6688:6688"
+      volumes:
+        - ./chainlink-volume:/chainlink
+      command: node start --password /chainlink/password.txt --api /chainlink/credentials.txt
